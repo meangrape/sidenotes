@@ -86,11 +86,12 @@ def common_args(a: argparse.Namespace, extra: list[str]) -> list[str]:
 
 
 def html_command(a: argparse.Namespace, extra: list[str], out: Path) -> list[str]:
-    cmd = [a.pandoc, str(a.source), "--standalone",
-           "--lua-filter", str(a.lua_filter), "--css", str(a.css)]
+    # pandoc runs --citeproc and filters in command-line order; citeproc must
+    # come first so the notes it creates for citations reach the sidenote filter.
+    cmd = [a.pandoc, str(a.source), "--standalone", "--css", str(a.css)]
     if a.embed:
         cmd.append("--embed-resources")
-    return cmd + common_args(a, extra) + ["-o", str(out)]
+    return cmd + common_args(a, extra) + ["--lua-filter", str(a.lua_filter), "-o", str(out)]
 
 
 def pdf_command(a: argparse.Namespace, extra: list[str], out: Path) -> list[str]:

@@ -46,10 +46,11 @@ code { font-size: 0.9em; }
   position: relative;
 }
 .sidenote::before {
-  content: counter(sidenote) " ";
+  content: counter(sidenote);
   vertical-align: super;
   font-size: 0.75em;
   line-height: 0;
+  margin-right: 0.35em;   /* a real gap, so a code span's background cannot touch the numeral */
 }
 /* Reference list. pandoc's own embedded style supplies the hanging indent. */
 #refs { width: 66%; }

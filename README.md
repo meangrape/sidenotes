@@ -147,8 +147,11 @@ semicolons make one note.[@appelbaum2007; @feller1994]
 Delete the `csl` line from the metadata and pandoc falls back to its
 built-in Chicago author–date style, which puts citations in the text as
 parenthetical author and year and leaves the margin to your own notes.
-Either way the reference list is placed wherever the empty `refs` block
-below sits in the source; put it under a heading of your choice.
+Either way pandoc appends the reference list at the end of the document,
+so end the file with a heading for it. To put the list somewhere else,
+insert an empty fenced block with the id `refs` where it should go, as in
+the example below. That block is pandoc-only syntax; other Markdown
+readers show it as literal text, which is why this file does without it.
 
 Give any entry whose title is not in English a `langid` field, as the
 Brandi entry has. Without it the style capitalises the title as if it
@@ -164,12 +167,12 @@ Brandi set out the argument.[@brandi1963, 34]
 :::
 ```
 
+[^inside]: See @appelbaum2007 on the same point. Written as `@appelbaum2007`,
+    without brackets, the citation is set as a name in running text.
+
 [^langid]: `langid = {italian}` in the BibTeX entry. BibLaTeX uses the
     same field name, so a bibliography that already carries it needs
     nothing more.
-
-[^inside]: See @appelbaum2007 on the same point. Written as `@appelbaum2007`,
-    without brackets, the citation is set as a name in running text.
 
 # Building
 
@@ -207,6 +210,10 @@ pandoc README.md --citeproc --pdf-engine=lualatex \
        --include-in-header=tex/preamble.tex -o output/README.pdf
 ```
 
+The paper size of the PDF is set in the metadata block at the top of the
+file. Leave the `papersize` line out and you get letter; write `a4` or
+`legal` for the others.[^paper] The web page ignores it.
+
 The Lua filter rewrites each footnote as an inline span for the web page.
 The preamble sets the page geometry, the font fallback and the margin
 note packages for the PDF.[^log] Neither touches the Markdown.
@@ -218,6 +225,3 @@ note packages for the PDF.[^log] Neither touches the Markdown.
     with `--verbose` and look for a line beginning `[fontfallback]`.
 
 # References
-
-::: {#refs}
-:::
