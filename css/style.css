@@ -1,0 +1,61 @@
+/* Sidenote layout: two thirds text, one third notes, notes level with their mark. */
+:root {
+  /* Fallback list, tried left to right. Note: a generic family such as `serif`
+     always matches, so nothing after it is ever reached. */
+  --text-font: "Arbitare Sans", serif, sans-serif, "Helvetica Neue";
+}
+html { font-size: 18px; }
+body {
+  font-family: var(--text-font);
+  font-weight: 400;
+  line-height: 1.45;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  counter-reset: sidenote;
+  color: #111;
+  background: #fff;
+}
+/* Text column: 2/3 of the body. The remaining 1/3 is the note column. */
+header, section, article, p, h1, h2, h3, ul, ol, pre, blockquote { width: 66%; }
+p > *, li > * { width: auto; }
+h1 { font-size: 1.6em; line-height: 1.2; }
+h2 { font-size: 1.2em; margin-top: 1.6em; }
+pre { font-size: 0.8em; overflow-x: auto; }
+code { font-size: 0.9em; }
+
+/* The mark in the text. */
+.sidenote-ref { counter-increment: sidenote; }
+.sidenote-ref::after {
+  content: counter(sidenote);
+  vertical-align: super;
+  font-size: 0.7em;
+  line-height: 0;
+  padding-left: 0.05em;
+}
+/* The note. `float:right` puts its top on the line that holds the mark;
+   `clear:right` drops it below any earlier note it would overlap. */
+.sidenote {
+  float: right;
+  clear: right;
+  width: 45%;            /* ~30% of the page */
+  margin-right: -50%;    /* pushes it into the 1/3 margin column */
+  margin-bottom: 0.6em;
+  font-size: 0.78em;
+  line-height: 1.35;
+  position: relative;
+}
+.sidenote::before {
+  content: counter(sidenote) " ";
+  vertical-align: super;
+  font-size: 0.75em;
+  line-height: 0;
+}
+/* Reference list. pandoc's own embedded style supplies the hanging indent. */
+#refs { width: 66%; }
+#refs .csl-entry { margin-bottom: 0.4em; }
+
+@media (max-width: 720px) {
+  header, section, article, p, h1, h2, h3, ul, ol, pre, blockquote { width: 100%; }
+  .sidenote { float: none; display: block; width: auto; margin: 0.5em 0 0.5em 1.5em; }
+}

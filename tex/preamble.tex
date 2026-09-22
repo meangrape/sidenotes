@@ -1,0 +1,29 @@
+% Sidenote layout for lualatex via pandoc.
+% Paper size comes from the `papersize` field in the Markdown metadata (pandoc
+% passes it to \documentclass); the class default is letter. Widths are
+% fractions of the paper so the 2/3 : 1/3 split holds on any size.
+\usepackage[left=0.09\paperwidth, top=1in, bottom=1in,
+            textwidth=0.54\paperwidth,
+            marginparsep=0.03\paperwidth, marginparwidth=0.27\paperwidth]{geometry}
+\usepackage{fontspec}
+\usepackage{sidenotes}   % \sidenote: numbered marginpar, level with the mark, stacks on collision
+\usepackage{marginfix}   % a note that would run off the page bottom moves to the next page
+
+% Font fallback: \fontfallback{\setmainfont}{A, B, C} sets the first family that exists.
+\ExplSyntaxOn
+\NewDocumentCommand{\fontfallback}{ m m }{
+  \bool_set_false:N \l_tmpa_bool
+  \clist_map_inline:nn {#2} {
+    \bool_if:NF \l_tmpa_bool {
+      \IfFontExistsTF {##1}
+        { #1 {##1} \bool_set_true:N \l_tmpa_bool \typeout{[fontfallback]~using~##1} }
+        { \typeout{[fontfallback]~not~found:~##1} }
+    }
+  }
+}
+\ExplSyntaxOff
+% "Serif" and "Sans Serif" have no meaning to LaTeX; Latin Modern stands in for them.
+\fontfallback{\setmainfont}{Arbitare Sans, Latin Modern Roman, Latin Modern Sans, Helvetica Neue}
+
+% Markdown footnotes arrive as \footnote{...}; send them to the margin instead.
+\renewcommand{\footnote}[1]{\sidenote{#1}}
